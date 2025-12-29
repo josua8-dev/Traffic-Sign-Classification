@@ -1,5 +1,5 @@
 """
-GTSRB Data Loader - Fresh implementation for PNG images
+GTSRB Data Loader
 Handles the full German Traffic Sign Recognition Benchmark dataset
 """
 
@@ -40,7 +40,7 @@ class GTSRBLoader:
         self.img_size = img_size
         self.train_dir = os.path.join(data_dir, 'Train')
         
-        print(f"\n🚦 GTSRB Data Loader")
+        print(f"\nGTSRB Data Loader")
         print(f"   Data directory: {os.path.abspath(data_dir)}")
         print(f"   Target image size: {img_size}")
     
@@ -83,7 +83,7 @@ class GTSRBLoader:
                 labels.append(class_id)
                 
             except Exception as e: 
-                print(f"   ⚠️  Error loading {img_file. name}: {e}")
+                print(f"   Error loading {img_file. name}: {e}")
                 continue
         
         return images, labels
@@ -100,7 +100,7 @@ class GTSRBLoader:
         print(f"   Location: {os.path.abspath(self. train_dir)}\n")
         
         if not os.path.exists(self.train_dir):
-            print(f"❌ Training directory not found: {self.train_dir}")
+            print(f"Training directory not found: {self.train_dir}")
             return None, None
         
         all_images = []
@@ -120,14 +120,14 @@ class GTSRBLoader:
                 print(f"   Class {class_id: 2d}: No images found")
         
         if len(all_images) == 0:
-            print("\n❌ No images loaded!")
+            print("\nNo images loaded!")
             return None, None
         
         # Convert to numpy arrays
         all_images = np.array(all_images, dtype=np.uint8)
         all_labels = np.array(all_labels, dtype=np.int32)
         
-        print(f"\n✅ Total loaded:   {len(all_images)} images from 43 classes")
+        print(f"\nTotal loaded:   {len(all_images)} images from 43 classes")
         
         return all_images, all_labels
     
@@ -142,7 +142,7 @@ class GTSRBLoader:
         Returns:
             numpy array of equalized images
         """
-        print("\n📊 Applying histogram equalization...")
+        print("\nApplying histogram equalization")
         
         equalized_images = []
         
@@ -158,7 +158,7 @@ class GTSRBLoader:
             
             equalized_images.append(img_eq)
         
-        print("✅ Histogram equalization complete")
+        print("Histogram equalization done")
         
         return np.array(equalized_images, dtype=np.uint8)
     
@@ -172,9 +172,9 @@ class GTSRBLoader:
         Returns:
             numpy array of float32 images with values in [0, 1]
         """
-        print("📊 Normalizing images to [0, 1]...")
+        print("Normalizing images")
         normalized = images.astype(np. float32) / 255.0
-        print(f"✅ Normalized - range: [{normalized.min():.3f}, {normalized.max():.3f}]")
+        print(f"Normalized - range: [{normalized.min():.3f}, {normalized.max():.3f}]")
         return normalized
     
     def analyze_dataset(self, labels):
@@ -182,7 +182,7 @@ class GTSRBLoader:
         Print detailed dataset statistics
         """
         print("\n" + "="*70)
-        print("📊 DATASET ANALYSIS")
+        print("DATASET ANALYSIS")
         print("="*70)
         
         class_counts = Counter(labels)
@@ -218,9 +218,9 @@ class GTSRBLoader:
         print(f"  Imbalance ratio:           {max_count/min_count:.2f}x")
         
         if max_count / min_count > 3:
-            print(f"  ⚠️  Dataset is imbalanced - will use class weights")
+            print(f"Dataset is imbalanced - will use class weights")
         else:
-            print(f"  ✅ Dataset is reasonably balanced")
+            print(f"Dataset is reasonably balanced")
         
         print("="*70 + "\n")
     
@@ -228,7 +228,7 @@ class GTSRBLoader:
         """
         Visualize random samples from the dataset
         """
-        print(f"\n📸 Visualizing {num_samples} random samples...")
+        print(f"\nVisualizing {num_samples} random samples...")
         
         # Select random indices
         indices = np.random.choice(len(images), min(num_samples, len(images)), replace=False)
@@ -255,14 +255,14 @@ class GTSRBLoader:
         plt.suptitle('GTSRB Dataset - Random Samples', fontsize=16, fontweight='bold')
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"✅ Saved visualization to '{save_path}'")
+        print(f"Saved visualization to '{save_path}'")
         plt.show()
     
     def visualize_class_distribution(self, labels, save_path='class_distribution.png'):
         """
         Visualize the class distribution as a bar chart
         """
-        print(f"\n📊 Visualizing class distribution...")
+        print(f"\nVisualizing class distribution")
         
         class_counts = Counter(labels)
         classes = sorted(class_counts.keys())
@@ -286,7 +286,7 @@ class GTSRBLoader:
         
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"✅ Saved distribution plot to '{save_path}'")
+        print(f"Saved distribution plot to '{save_path}'")
         plt.show()
 
 
@@ -306,7 +306,7 @@ def load_and_prepare_data(data_dir='GTSRB', img_size=(64, 64), test_size=0.2,
         X_train, X_val, y_train, y_val - Ready for training
     """
     print("\n" + "="*70)
-    print("🚀 GTSRB DATA PREPARATION PIPELINE")
+    print("GTSRB DATA PREPARATION PIPELINE")
     print("="*70)
     
     # Initialize loader
@@ -316,7 +316,7 @@ def load_and_prepare_data(data_dir='GTSRB', img_size=(64, 64), test_size=0.2,
     images, labels = loader.load_all_classes()
     
     if images is None or len(images) == 0:
-        print("\n❌ Failed to load data.   Check your directory structure.")
+        print("\nFailed to load data. Check structure.")
         return None, None, None, None
     
     # Analyze dataset
@@ -329,18 +329,13 @@ def load_and_prepare_data(data_dir='GTSRB', img_size=(64, 64), test_size=0.2,
     
     # Preprocessing
     print("\n" + "="*70)
-    print("🔧 PREPROCESSING")
+    print("PREPROCESSING")
     print("="*70)
     
     if use_histogram_eq:
         images = loader.apply_histogram_equalization(images)
     
     images = loader.normalize_images(images)
-    
-    # Split into train and validation
-    print("\n" + "="*70)
-    print(f"📦 SPLITTING DATA (train={100*(1-test_size):.0f}% / val={100*test_size:.0f}%)")
-    print("="*70)
     
     X_train, X_val, y_train, y_val = train_test_split(
         images, labels,
@@ -349,7 +344,7 @@ def load_and_prepare_data(data_dir='GTSRB', img_size=(64, 64), test_size=0.2,
         stratify=labels  # Maintain class distribution
     )
     
-    print(f"\n✅ Data split complete:")
+    print(f"\nData split complete:")
     print(f"   Training set:     {X_train.shape} - {len(X_train):,} images")
     print(f"   Validation set: {X_val.shape} - {len(X_val):,} images")
     print(f"   Classes:  {len(np.unique(y_train))}")
@@ -357,15 +352,11 @@ def load_and_prepare_data(data_dir='GTSRB', img_size=(64, 64), test_size=0.2,
     print(f"   Data type: {X_train.dtype}")
     
     print("\n" + "="*70)
-    print("✅ DATA READY FOR TRAINING!")
+    print("DATA READY")
     print("="*70 + "\n")
     
     return X_train, X_val, y_train, y_val
 
-
-# =====================================================
-# MAIN - Test the data loader
-# =====================================================
 
 if __name__ == "__main__":
     # Load and prepare data
@@ -378,5 +369,4 @@ if __name__ == "__main__":
     )
     
     if X_train is not None:  
-        print("🎉 Data loading successful!")
-        print(f"   Ready to train with {len(X_train):,} images")
+        print("Data loading good")

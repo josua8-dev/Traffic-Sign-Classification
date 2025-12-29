@@ -27,10 +27,12 @@ In a Nutshell: Given are pictures of traffic signs. Basically I want the compute
 
     *Layer 2: Batch Normalization (Keeping Things Stable)*                          
 
-    After finding patterns, the numbers can get messy - some too big, some too small. Batch normalization is like a quality control checkpoint that standardizes everything to a similar range. This keeps the training stable and helps the model learn faster without getting confused by wildly different number scales.
+    After finding patterns, the numbers can get messy - some too big, some too small. Batch normalization is like a quality control checkpoint that standardizes everything to a similar range. This keeps the training stable and helps the model learn faster without getting confused by wildly different number scales.           
 
 
-    *Layer 3: Max Pooling (Shrinking Down)*                
+
+
+    *Layer 3: Max Pooling (Shrinking Down)*                          
 
     Now we need to focus on what matters. Max pooling takes a small grid (like 2×2 pixels) and keeps only the strongest signal - the maximum value. This shrinks the image (64×64 → 32×32 → 16×16) while keeping the important features. It's like zooming out on a map - you lose small details but keep the main landmarks.
 
@@ -127,7 +129,7 @@ augmented_model.fit(X_train, y_train, batch_size=128, ...)
     Replaced Flatten() with GlobalAveragePooling2D():
     ```Code
     8×8×256 features → GlobalAvgPool → 256 numbers → Dense(512)
-
+    
     This reduced the bottleneck from 2.1M parameters to just 131K parameters (16× reduction). The model became:
 
         - Faster to train (fewer weights to update)

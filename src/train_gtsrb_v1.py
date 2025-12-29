@@ -36,7 +36,7 @@ class TrafficSignCNN:
         self.model = None
         self.history = None
         
-        print(f"\n🏗️  Traffic Sign CNN Classifier")
+        print(f"\nTraffic Sign CNN Classifier")
         print(f"   Classes: {num_classes}")
         print(f"   Input size: {img_size}")
     
@@ -47,10 +47,8 @@ class TrafficSignCNN:
         print(f"\n🔨 Building CNN model...")
         
         model = keras.Sequential([
-            # Input layer
             layers.Input(shape=(*self.img_size, 3)),
             
-            # Convolutional Block 1
             layers.Conv2D(32, (5, 5), activation='relu', padding='same'),
             layers. BatchNormalization(),
             layers. Conv2D(32, (5, 5), activation='relu', padding='same'),
@@ -58,7 +56,6 @@ class TrafficSignCNN:
             layers. MaxPooling2D((2, 2)),
             layers. Dropout(0.25),
             
-            # Convolutional Block 2
             layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
             layers. BatchNormalization(),
             layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
@@ -66,7 +63,6 @@ class TrafficSignCNN:
             layers.MaxPooling2D((2, 2)),
             layers.Dropout(0.25),
             
-            # Convolutional Block 3
             layers. Conv2D(128, (3, 3), activation='relu', padding='same'),
             layers. BatchNormalization(),
             layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
@@ -74,13 +70,11 @@ class TrafficSignCNN:
             layers.MaxPooling2D((2, 2)),
             layers.Dropout(0.3),
             
-            # Convolutional Block 4
             layers.Conv2D(256, (3, 3), activation='relu', padding='same'),
             layers.BatchNormalization(),
             layers.MaxPooling2D((2, 2)),
             layers.Dropout(0.4),
             
-            # Fully Connected Layers
             layers.Flatten(),
             layers.Dense(512, activation='relu'),
             layers.BatchNormalization(),
@@ -89,20 +83,19 @@ class TrafficSignCNN:
             layers.BatchNormalization(),
             layers.Dropout(0.5),
             
-            # Output layer
             layers.Dense(self. num_classes, activation='softmax')
         ])
         
         self.model = model
         
-        print("✅ Model architecture created")
+        print("Model architecture created")
         return model
     
     def compile_model(self, learning_rate=0.001):
         """
         Compile the model with optimizer and loss function
         """
-        print(f"\n⚙️  Compiling model...")
+        print(f"\nCompiling model...")
         print(f"   Optimizer: Adam (lr={learning_rate})")
         print(f"   Loss:  Sparse Categorical Crossentropy")
         
@@ -112,7 +105,7 @@ class TrafficSignCNN:
             metrics=['accuracy']
         )
         
-        print("✅ Model compiled")
+        print("Model compiled")
     
     def summary(self):
         """
@@ -133,16 +126,16 @@ class TrafficSignCNN:
         print("\n🔄 Creating data augmentation...")
         
         datagen = ImageDataGenerator(
-            rotation_range=15,              # Rotate ±15 degrees
-            width_shift_range=0.1,          # Shift horizontally 10%
-            height_shift_range=0.1,         # Shift vertically 10%
-            zoom_range=0.2,                 # Zoom ±20%
-            shear_range=0.1,                # Shear transformation
-            brightness_range=[0.7, 1.3],    # Brightness 70-130%
-            fill_mode='nearest'             # Fill empty pixels
+            rotation_range=15,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            zoom_range=0.2,
+            shear_range=0.1,
+            brightness_range=[0.7, 1.3],
+            fill_mode='nearest'
         )
         
-        print("✅ Data augmentation configured:")
+        print("Data augmentation configured:")
         print("   - Rotation: ±15°")
         print("   - Shifts: ±10%")
         print("   - Zoom: ±20%")
@@ -155,7 +148,7 @@ class TrafficSignCNN:
         Compute class weights to handle imbalanced dataset
         Gives more importance to underrepresented classes
         """
-        print("\n⚖️  Computing class weights...")
+        print("\nComputing class weights...")
         
         classes = np.unique(y_train)
         weights = compute_class_weight(
@@ -165,7 +158,6 @@ class TrafficSignCNN:
         )
         class_weights = dict(zip(classes, weights))
         
-        # Show sample weights
         print(f"   Example weights:")
         for cls in list(classes)[:5]: 
             print(f"     Class {cls}: {class_weights[cls]:.3f}")
@@ -188,7 +180,7 @@ class TrafficSignCNN:
             use_augmentation: Whether to use data augmentation
         """
         print("\n" + "="*70)
-        print("🚀 STARTING TRAINING")
+        print("STARTING TRAINING")
         print("="*70)
         print(f"   Training samples:    {len(X_train):,}")
         print(f"   Validation samples: {len(X_val):,}")
@@ -197,10 +189,8 @@ class TrafficSignCNN:
         print(f"   Data augmentation:   {use_augmentation}")
         print("="*70 + "\n")
         
-        # Compute class weights
         class_weights = self.compute_class_weights(y_train)
         
-        # Setup callbacks
         callbacks = [
             keras.callbacks.ModelCheckpoint(
                 'best_traffic_sign_model.keras',
@@ -224,7 +214,6 @@ class TrafficSignCNN:
             )
         ]
         
-        # Train with or without augmentation
         if use_augmentation:
             datagen = self.create_data_augmentation()
             datagen.fit(X_train)
@@ -249,21 +238,20 @@ class TrafficSignCNN:
                 verbose=1
             )
         
-        print("\n✅ Training complete!")
+        print("\nTraining complete!")
     
     def plot_history(self, save_path='training_history.png'):
         """
         Plot training history
         """
         if self.history is None:
-            print("⚠️  No training history available")
+            print("No training history available")
             return
         
-        print(f"\n📊 Plotting training history...")
+        print(f"\nPlotting training history...")
         
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
         
-        # Accuracy plot
         ax1.plot(self.history.history['accuracy'], 
                 label='Training Accuracy', linewidth=2, marker='o', markersize=4)
         ax1.plot(self.history.history['val_accuracy'], 
@@ -274,7 +262,6 @@ class TrafficSignCNN:
         ax1.legend(fontsize=11)
         ax1.grid(True, alpha=0.3)
         
-        # Loss plot
         ax2.plot(self. history.history['loss'], 
                 label='Training Loss', linewidth=2, marker='o', markersize=4)
         ax2.plot(self.history. history['val_loss'], 
@@ -287,7 +274,7 @@ class TrafficSignCNN:
         
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"✅ Saved training history to '{save_path}'")
+        print(f"Saved training history to '{save_path}'")
         plt.show()
     
     def evaluate(self, X_val, y_val):
@@ -295,7 +282,7 @@ class TrafficSignCNN:
         Evaluate model on validation set
         """
         print("\n" + "="*70)
-        print("📊 MODEL EVALUATION")
+        print("MODEL EVALUATION")
         print("="*70)
         
         loss, accuracy = self.model.evaluate(X_val, y_val, verbose=0)
@@ -310,16 +297,13 @@ class TrafficSignCNN:
         """
         Plot confusion matrix
         """
-        print(f"\n📈 Generating confusion matrix...")
+        print(f"\nGenerating confusion matrix...")
         
-        # Get predictions
         y_pred = self. model.predict(X_val, verbose=0)
         y_pred_classes = np.argmax(y_pred, axis=1)
         
-        # Compute confusion matrix
         cm = confusion_matrix(y_val, y_pred_classes)
         
-        # Plot
         plt.figure(figsize=(14, 12))
         sns.heatmap(cm, annot=False, fmt='d', cmap='Blues', 
                     cbar_kws={'label': 'Count'})
@@ -328,23 +312,20 @@ class TrafficSignCNN:
         plt.ylabel('True Class', fontsize=12)
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"✅ Saved confusion matrix to '{save_path}'")
+        print(f"Saved confusion matrix to '{save_path}'")
         plt.show()
     
     def show_predictions(self, X_val, y_val, num_samples=10, save_path='predictions.png'):
         """
         Show model predictions on random samples
         """
-        print(f"\n🔮 Showing predictions on {num_samples} samples...")
+        print(f"\nShowing predictions on {num_samples} samples...")
         
-        # Select random samples
         indices = np.random.choice(len(X_val), num_samples, replace=False)
         
-        # Predict
         predictions = self.model.predict(X_val[indices], verbose=0)
         predicted_classes = np.argmax(predictions, axis=1)
         
-        # Plot
         fig, axes = plt.subplots(2, 5, figsize=(15, 6))
         axes = axes.ravel()
         
@@ -355,7 +336,6 @@ class TrafficSignCNN:
             pred_label = predicted_classes[i]
             confidence = predictions[i][pred_label] * 100
             
-            # Green if correct, red if wrong
             color = 'green' if true_label == pred_label else 'red'
             
             title = f"True: {true_label} | Pred: {pred_label}\nConf: {confidence:.1f}%"
@@ -365,7 +345,7 @@ class TrafficSignCNN:
         plt.suptitle('Model Predictions', fontsize=16, fontweight='bold')
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"✅ Saved predictions to '{save_path}'")
+        print(f"Saved predictions to '{save_path}'")
         plt.show()
     
     def save_model(self, filepath='traffic_sign_model.keras'):
@@ -373,32 +353,26 @@ class TrafficSignCNN:
         Save the trained model
         """
         self.model.save(filepath)
-        print(f"\n💾 Model saved to '{filepath}'")
+        print(f"\nModel saved to '{filepath}'")
     
     def load_model(self, filepath='traffic_sign_model.keras'):
         """
         Load a saved model
         """
         self. model = keras.models.load_model(filepath)
-        print(f"📂 Model loaded from '{filepath}'")
-
-
-# =====================================================
-# MAIN TRAINING PIPELINE
-# =====================================================
+        print(f"Model loaded from '{filepath}'")
 
 def main():
     """
     Complete training pipeline for GTSRB traffic sign classification
     """
     print("\n" + "="*70)
-    print("🚦 GTSRB TRAFFIC SIGN CLASSIFICATION")
+    print("GTSRB TRAFFIC SIGN CLASSIFICATION")
     print("="*70)
     print(f"   Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*70)
     
-    # ==================== STEP 1: Load Data ====================
-    print("\n📁 STEP 1: LOADING DATA")
+    print("\nNow: LOADING DATA")
     
     X_train, X_val, y_train, y_val = load_and_prepare_data(
         data_dir='GTSRB',
@@ -409,19 +383,17 @@ def main():
     )
     
     if X_train is None: 
-        print("\n❌ Failed to load data.  Exiting.")
+        print("\nFailed to load data.  Exiting.")
         return None
     
-    # ==================== STEP 2: Build Model ====================
-    print("\n🏗️  STEP 2: BUILDING MODEL")
+    print("\nNow: BUILDING MODEL")
     
     classifier = TrafficSignCNN(num_classes=43, img_size=(64, 64))
     classifier.build_model()
     classifier.compile_model(learning_rate=0.001)
     classifier.summary()
     
-    # ==================== STEP 3: Train Model ====================
-    print("\n🎓 STEP 3: TRAINING MODEL")
+    print("\nNow: TRAINING MODEL")
     
     classifier.train(
         X_train, y_train,
@@ -431,52 +403,21 @@ def main():
         use_augmentation=True
     )
     
-    # ==================== STEP 4: Evaluate ====================
-    print("\n📊 STEP 4: EVALUATION")
+    print("\nNow: EVALUATION")
     
     classifier.plot_history(save_path='training_history.png')
     loss, accuracy = classifier.evaluate(X_val, y_val)
     
-    # ==================== STEP 5: Visualizations ====================
-    print("\n📸 STEP 5: CREATING VISUALIZATIONS")
+    print("\nNow: CREATING VISUALIZATIONS")
     
     classifier.show_predictions(X_val, y_val, num_samples=10, save_path='predictions.png')
     classifier.plot_confusion_matrix(X_val, y_val, save_path='confusion_matrix.png')
     
-    # ==================== STEP 6: Save Model ====================
-    print("\n💾 STEP 6: SAVING MODEL")
+    print("\nNow: SAVING MODEL")
     
     classifier.save_model('traffic_sign_model.keras')
-    
-    # Save training info
-    info = {
-        'training_samples': int(len(X_train)),
-        'validation_samples': int(len(X_val)),
-        'num_classes': 43,
-        'final_accuracy': float(accuracy),
-        'final_loss': float(loss),
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    }
-    
-    with open('training_info.json', 'w') as f:
-        json.dump(info, f, indent=2)
-    print("💾 Training info saved to 'training_info.json'")
-    
-    # ==================== COMPLETE ====================
-    print("\n" + "="*70)
-    print("✅ TRAINING PIPELINE COMPLETE!")
-    print("="*70)
-    print(f"\n🎉 Final Validation Accuracy: {accuracy*100:.2f}%")
-    print(f"\n📁 Generated files:")
-    print("   - best_traffic_sign_model.keras  (best model)")
-    print("   - traffic_sign_model.keras       (final model)")
-    print("   - training_history.png           (accuracy/loss curves)")
-    print("   - predictions.png                (sample predictions)")
-    print("   - confusion_matrix.png           (confusion matrix)")
-    print("   - gtsrb_samples.png              (dataset samples)")
-    print("   - gtsrb_distribution.png         (class distribution)")
-    print("   - training_info.json             (training metadata)")
-    print("\n" + "="*70 + "\n")
+
+    print("TRAINING PIPELINE COMPLETE!")
     
     return classifier
 

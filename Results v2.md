@@ -1,8 +1,8 @@
 # Results
-
+---
 ## Training Performance
 
-The model was trained for **22 epochs** with the following configuration:
+The model was trained for **72 epochs** with the following configuration:
 - **Architecture**:  Convolutional Neural Network (CNN)
 - **Optimizer**: Adam (initial learning rate: 0.001)
 - **Batch Size**: 128
@@ -24,7 +24,6 @@ The model was trained for **22 epochs** with the following configuration:
 ## Test Set Evaluation
 
 The trained model was evaluated on a separate test set that was not seen during training.       
-*Split Train Data - 80% Train & 20% Validation*
 
 ### Overall Performance
 
@@ -39,7 +38,7 @@ The trained model was evaluated on a separate test set that was not seen during 
 
 The confusion matrix reveals:
 - **Strong diagonal**:  predictions seem to be nearly perfect (clear diagonal)
-- **Common confusions**: not found? 
+- **Common confusions**: Class 6 is visibly lighter as well as the CLasses 19 - 25
 
 ---
 
@@ -49,11 +48,12 @@ The confusion matrix reveals:
 *Figure 3: accuracy breakdown for each of the 43 traffic sign classes*
 
 ### Best Performing Classes
-- **Classes**:  Many are at nearly at a perfect 100%
+Many are at nearly at a perfect 100%. Surprisingly, the model did well in distinguishing between the different Speed Limits (my guess would have been that the similarity in form and color woult throw it off). 
 
 ### Challenging Classes
-- **Class 6 (End of speed limit (80km/h))**: about 85% Accuracy -> fairly low. Might be because of the similarity to the Speed Limit (80km/h) and the only difference being the color
-- **Class 21 (Dangerous curve to the right)**: about 68% Accuracy -> lowest overall by far. Might be mistaken with similar danger signs.
+- **Class 6 (End of speed limit (80km/h))**: about 85% Accuracy -> really low. Surprising result. Might be because of the similarity to the Speed Limit (80km/h) and the only difference being the color. While I would have thought that the three diagonal stripes, part of the sign, would differentiate it well enough. Another. Another guess would be that it confused it alot with the end of no passing signs, that look pretty similar as well.
+
+- **Class 21 (Dangerous curve to the right)**: about 68% Accuracy -> lowest overall by far. Might be mistaken with similar danger signs. This result surprised me the most and I can't really pinpoint what the real issue here was. It would be interesting to find this out.
 
 **Observations**:
 - Classes with more training samples generally perform better
